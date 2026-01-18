@@ -6,8 +6,8 @@ FROM base AS builder
 
 # Install required tools
 RUN apk --no-cache add \
-    curl \
-    ca-certificates
+    curl=8.17.0-r1 \
+    ca-certificates=20251003-r0
 
 # Install uv
 ADD 'https://astral.sh/uv/0.9.26/install.sh' /uv-installer.sh
