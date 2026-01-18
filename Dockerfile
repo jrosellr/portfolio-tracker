@@ -57,12 +57,9 @@ COPY --from=builder --chown=python:python /python /python
 COPY --from=builder --chown=nonroot:nonroot /app/.venv /app/.venv
 ENV PATH="/app/.venv/bin:$PATH"
 
-# Reset the entrypoint
-ENTRYPOINT []
-
 # Use the non-root user to run our application
 USER nonroot
 
 WORKDIR /app
 
-CMD ["/app/.venv/bin/main"]
+ENTRYPOINT ["/app/.venv/bin/main"]
