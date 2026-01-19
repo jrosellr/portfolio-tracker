@@ -17,21 +17,24 @@ ENV UV_TOOL_BIN_DIR=/usr/local/bin
 ENV UV_PYTHON_INSTALL_DIR=/python
 ENV UV_PYTHON_PREFERENCE=only-managed
 
-WORKDIR /app
-
-# Copy lockfile and settings
-COPY pyproject.toml uv.lock .python-version ./
+WORKDIR /build
 
 # Install python
 RUN --mount=type=cache,target=/root/.cache/uv \
+    --mount=type=bind,source=uv.lock,target=uv.lock \
+    --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
+    --mount=type=bind,source=.python-version,target=.python-version \
     uv python install
 
 # Install the project's dependencies
 RUN --mount=type=cache,target=/root/.cache/uv \
+    --mount=type=bind,source=uv.lock,target=uv.lock \
+    --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
+    --mount=type=bind,source=.python-version,target=.python-version \
     uv sync --locked --no-install-project --no-editable
 
 # Copy the project
-COPY src /app
+COPY . .
 
 # Build the project
 RUN --mount=type=cache,target=/root/.cache/uv \
@@ -48,13 +51,13 @@ RUN addgroup nonroot \
     && adduser --disabled-password --ingroup nonroot --no-create-home nonroot
 
 # Copy the python installation and the project
-COPY --from=builder --chown=python:python /python /python
-COPY --from=builder --chown=nonroot:nonroot /app/.venv /app/.venv
-ENV PATH="/app/.venv/bin:$PATH"
+COPY --from=builder /python /python
+COPY --from=builder --chown=nonroot:nonroot /build/.venv /portfolio-tracker/.venv
+ENV PATH="/portfolio-tracker/.venv/bin:$PATH"
 
 # Use the non-root user to run our application
 USER nonroot
 
-WORKDIR /app
+WORKDIR /portfolio-tracker
 
-ENTRYPOINT ["/app/.venv/bin/main"]
+ENTRYPOINT ["python", "/portfolio-tracker/.venv/bin/pt"]

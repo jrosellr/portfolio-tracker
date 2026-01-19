@@ -1,2 +1,2 @@
-def hello_world() -> None:
+def main() -> None:
     print("Hello from portfolio-tracker!")

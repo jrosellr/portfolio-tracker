@@ -3,14 +3,17 @@ name = "portfolio-tracker"
 version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
+authors = [
+    { name = "Joan Rosell", email = "joan.rosellr@gmail.com" }
+]
 requires-python = ">=3.12"
-dependencies = []
-
-[tool.uv]
-package = true
 
 [project.scripts]
-main = "app:main"
+pt = "portfolio_tracker.cli:main"
+
+[build-system]
+requires = ["uv_build>=0.9.26,<0.10.0"]
+build-backend = "uv_build"
 
 [dependency-groups]
 dev = [
